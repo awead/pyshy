@@ -1,0 +1,33 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # RabbitMQ messaging port
+      - "15672:15672" # RabbitMQ management console
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  worker:
+    build:
+      context: ./worker
+    container_name: worker
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./worker:/app
+    working_dir: /app
+    environment:
+      RABBITMQ_HOST: rabbitmq
+
+  runner:
+    build:
+      context: ./worker
+    container_name: runner
+    volumes:
+      - ./worker:/app
+    working_dir: /app
+    command: /bin/sleep 3000000
+    environment:
+      RABBITMQ_HOST: rabbitmq
