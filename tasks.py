@@ -17,5 +17,5 @@ app = Celery(
 
 @app.task
 def smoke():
-    logger.info('Echoing back arguments')
+    logger.info('Inside the nvim session')
     return 'n/a'
